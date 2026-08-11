@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('jadwal_seleksi', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('lamaran_id')->constrained('lamaran')->onDelete('cascade');
+            $table->enum('tahap_seleksi', ['tes_online', 'wawancara_hrd', 'wawancara_user', 'mcu']);
+            $table->dateTime('tanggal_waktu');
+            $table->string('lokasi_atau_link');
+            $table->text('instruksi_tambahan')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('jadwal_seleksi');
+    }
+};
