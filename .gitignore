@@ -1,0 +1,20 @@
+# Environment files
+.env
+.env.backup
+.env.production
+*.env
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Storage / Build
+/storage/*.key
+/public/storage
+/public/build
