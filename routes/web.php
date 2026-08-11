@@ -6,6 +6,9 @@ use App\Http\Controllers\PublicJobController;
 use App\Http\Controllers\LamaranController;
 use App\Http\Controllers\Admin\JobAdminController;
 use App\Http\Controllers\Admin\VerificationAdminController;
+use App\Http\Controllers\Admin\ScheduleAdminController;
+use App\Http\Controllers\Admin\ScoringAdminController;
+use App\Http\Controllers\HRD\ReportHrdController;
 
 // --- ROUTE PUBLIK ---
 Route::get('/', [PublicJobController::class, 'index'])->name('home');
@@ -53,6 +56,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/pelamar', [VerificationAdminController::class, 'index'])->name('pelamar.index');
     Route::get('/pelamar/{id}', [VerificationAdminController::class, 'show'])->name('pelamar.show');
     Route::patch('/pelamar/{id}/status', [VerificationAdminController::class, 'updateStatus'])->name('pelamar.updateStatus');
+
+    // Penjadwalan Seleksi & Wawancara
+    Route::get('/jadwal', [ScheduleAdminController::class, 'index'])->name('jadwal.index');
+    Route::post('/jadwal', [ScheduleAdminController::class, 'store'])->name('jadwal.store');
+    Route::delete('/jadwal/{id}', [ScheduleAdminController::class, 'destroy'])->name('jadwal.destroy');
+
+    // Input Nilai & Keputusan Akhir
+    Route::get('/nilai', [ScoringAdminController::class, 'index'])->name('nilai.index');
+    Route::post('/nilai/{lamaran_id}', [ScoringAdminController::class, 'store'])->name('nilai.store');
 });
 
 // --- ROUTE HRD (ROLE: HRD, ADMIN) ---
@@ -64,4 +76,8 @@ Route::middleware(['auth', 'role:hrd,admin'])->prefix('hrd')->name('hrd.')->grou
         $lowonganAktif = \App\Models\Lowongan::where('status', 'published')->count();
         return view('hrd.dashboard', compact('totalLamaran', 'pelamarDiterima', 'pelamarDitolak', 'lowonganAktif'));
     })->name('dashboard');
+
+    // Modul Laporan Rekapitulasi & Export PDF (DomPDF)
+    Route::get('/laporan', [ReportHrdController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/export-pdf', [ReportHrdController::class, 'exportPdf'])->name('laporan.exportPdf');
 });
