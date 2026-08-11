@@ -30,8 +30,12 @@ Route::middleware(['auth', 'role:pelamar'])->prefix('pelamar')->name('pelamar.')
         $user = auth()->user();
         $lamarans = \App\Models\Lamaran::with(['lowongan', 'jadwalSeleksi', 'hasilSeleksi'])
             ->where('user_id', $user->id)
+            ->latest()
             ->get();
-        return view('pelamar.dashboard', compact('user', 'lamarans'));
+        $lowongans = \App\Models\Lowongan::where('status', 'published')
+            ->latest()
+            ->get();
+        return view('pelamar.dashboard', compact('user', 'lamarans', 'lowongans'));
     })->name('dashboard');
 
     Route::get('/lamar/{lowongan_id}', [LamaranController::class, 'create'])->name('lamar.create');
